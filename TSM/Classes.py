@@ -54,3 +54,17 @@ class Client(Person):
 class Technician(Person):
     def __init__(self, name, phone):
         super().__init__(name, phone)
+        
+        
+class Ticket:
+    def __init__(self, code, date):
+        self.code = code
+        self.date = date
+        
+    def std(self, Client, Product, Technician):
+        print("*-DATOS DE TICKET-*")
+        print("Cód. Ticket:", self.code)
+        print("Fecha del Ticket:", self.date.date())
+        print("Cliente:", Client.name, "; Tlf:", Client.phone)
+        print("Equipo - Marca:", Product.brand, "; Modelo:", Product.model)
+        print("Tecnico asignado:", Technician.name)
