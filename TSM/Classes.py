@@ -19,15 +19,19 @@ class Person:
       
       
 class Product:
-    def __init__(self, brand, model):
+    def __init__(self, brand, model, desc):
         self.brand = brand
         self.model = model
+        self.desc = desc
     
     def getBrand(self):
         return self.brand
     
     def getModel(self):
         return self.model
+        
+    def getDesc(self):
+        return self.desc
         
     def setBrand(self, brand):
         self.brand = brand
@@ -36,12 +40,17 @@ class Product:
     def setModel(self, model):
         self.model = model
         return self.model
+        
+    def setDesc(self, desc):
+        self.desc = desc
+        return self.desc
     
     
 class Client(Person):
-    def __init__(self, name, phone, place):
+    def __init__(self, name, phone, place, dni):
         super().__init__(name, phone)
         self.place = place
+        self.dni = dni
         
     def getPlace(self):
         return self.place
@@ -49,6 +58,13 @@ class Client(Person):
     def setPlace(self, place):
         self.place = place
         return self.place
+    
+    def getDNI(self):
+        return self.dni
+        
+    def setDNI(self, dni):
+        self.dni = dni
+        return self.dni
 
 
 class Technician(Person):
@@ -57,14 +73,47 @@ class Technician(Person):
         
         
 class Ticket:
-    def __init__(self, code, date):
+    def __init__(self, code, date, s_type, f_desc):
         self.code = code
         self.date = date
+        self.s_type = s_type
+        self.f_desc = f_desc
         
-    def std(self, Client, Product, Technician):
-        print("*-DATOS DE TICKET-*")
+    def ctd(self, Client, Product, Technician):
+        print("\n*-DATOS DE TICKET-*")
         print("Cód. Ticket:", self.code)
         print("Fecha del Ticket:", self.date.date())
         print("Cliente:", Client.name, "; Tlf:", Client.phone)
+        print("DIN:", Client.dni, "; Ubicación:", Client.place)
         print("Equipo - Marca:", Product.brand, "; Modelo:", Product.model)
         print("Tecnico asignado:", Technician.name)
+        print("Tipo de Servicio:", self.s_type)
+        
+        
+class Service:
+    inst_mntn = ["Instalacion Equipo", "Instalacion S.O.", "Instalacion Software", 
+    "Configuracion de equipos", "Actualizacion de equipos", 
+    "Copia de Seguridad", "Resolucion Problemas Hardware", 
+    "Resolucion Problemas Software"]
+        
+    support = ["Asistencia sobre Equipos", "Asistencia sobre S.O.", 
+    "Asistencia sobre Software", "Resolucion Problemas de Uso", 
+    "Formacion sobre Uso"]
+    
+    service_ctgs = [inst_mntn, support]
+    
+    def selectService():
+        ctg_sel = int(input("""Elija la categoria del servicio:
+    1) Instalacion/Mantenimiento
+    2) Asistencia Tecnica"""))
+        
+        if ctg_sel == 1:
+            serv_sel = int(input("""Elija el servicio a aplicar:
+    1) Instalacion Equipo
+    2) Instalacion S.O.
+    3) Instalacion Software
+    4) Configuracion de equipos
+    5) Actualizacion de equipos
+    6) Copia de Seguridad
+    7) Resolucion Problemas Hardware
+    8) Resolucion Problemas Software"""))
