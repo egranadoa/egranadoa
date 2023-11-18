@@ -91,21 +91,22 @@ class Ticket:
         
         
 class Service:
-    inst_mntn = ["Instalacion Equipo", "Instalacion S.O.", "Instalacion Software", 
-    "Configuracion de equipos", "Actualizacion de equipos", 
-    "Copia de Seguridad", "Resolucion Problemas Hardware", 
-    "Resolucion Problemas Software"]
+    inst_mntn = {1:"Instalacion Equipo", 2:"Instalacion S.O.",
+                3:"Instalacion Software", 4:"Configuracion de equipos",
+                5:"Actualizacion de equipos", 6:"Copia de Seguridad",
+                7:"Resolucion Problemas Hardware", 8:"Resolucion Problemas Software"}
+            
+    support = {1:"Asistencia sobre Equipos", 2:"Asistencia sobre S.O.",
+                3:"Asistencia sobre Software", 4:"Resolucion Problemas de Uso",
+                5:"Formacion sobre Uso"}
         
-    support = ["Asistencia sobre Equipos", "Asistencia sobre S.O.", 
-    "Asistencia sobre Software", "Resolucion Problemas de Uso", 
-    "Formacion sobre Uso"]
+    service_ctgs = {1:inst_mntn, 2:support}
     
-    service_ctgs = [inst_mntn, support]
-    
-    def selectService():
+    def selectService(self):
         ctg_sel = int(input("""Elija la categoria del servicio:
     1) Instalacion/Mantenimiento
-    2) Asistencia Tecnica"""))
+    2) Asistencia Tecnica
+    Opcion: """))
         
         if ctg_sel == 1:
             serv_sel = int(input("""Elija el servicio a aplicar:
@@ -116,4 +117,21 @@ class Service:
     5) Actualizacion de equipos
     6) Copia de Seguridad
     7) Resolucion Problemas Hardware
-    8) Resolucion Problemas Software"""))
+    8) Resolucion Problemas Software
+    Opcion: """))
+            service = self.inst_mntn.get(serv_sel)
+            return service
+        
+        elif ctg_sel == 2:
+            serv_sel = int(input("""Elija el servicio a aplicar:
+    1) Asistencia sobre Equipos
+    2) Asistencia sobre S.O.
+    3) Asistencia sobre Software
+    4) Resolucion Problemas de Uso
+    5) Formacion sobre Uso
+    Opcion: """))
+            service = self.support.get(serv_sel)
+            return service
+        
+        else:
+            print("Servicio no existente")
