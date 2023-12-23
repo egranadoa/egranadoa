@@ -1,3 +1,5 @@
+from fpdf import FPDF
+
 class Person:
     def __init__(self, name, phone, email):
         self.name = name
@@ -74,10 +76,9 @@ class Technician(Person):
         
         
 class Ticket:
-    def __init__(self, code, date, s_type):
+    def __init__(self, code, date):
         self.code = code
         self.date = date
-        self.s_type = s_type
         
     def ctd(self, Client, Product, Technician):
         print("\n*-DATOS DE TICKET-*")
@@ -89,61 +90,53 @@ class Ticket:
         print("Marca:", Product.brand, "; Modelo:", Product.model)
         print("Fallas que presenta:", Product.fails)
         print("Tecnico asignado:", Technician.name)
-        print("Servicios a aplicar:", self.s_type)
         
         
-class Service:
-    inst_mntn = {1:"Instalacion Equipo", 2:"Instalacion S.O.",
-                3:"Instalacion Software", 4:"Configuracion de equipos",
-                5:"Actualizacion de equipos", 6:"Copia de Seguridad",
-                7:"Resolucion Problemas Hardware", 8:"Resolucion Problemas Software"}
-            
-    support = {1:"Asistencia sobre Equipos", 2:"Asistencia sobre S.O.",
-                3:"Asistencia sobre Software", 4:"Resolucion Problemas de Uso",
-                5:"Formacion sobre Uso"}
+class Services:
+    def prod_rec(self, c_name, c_phone, c_email, p_brand, p_model, p_desc, f_desc, t_name, t_phone, t_email, tc_code):
+        new_bill = TSM_Bill_Reception('P', 'mm', 'Letter')
+        new_bill.add_page()
+        new_bill.set_font('helvetica', 'B', 14)
+        new_bill.cell(new_bill.w, 5, 'Datos del Cliente', 0, 1, 'L')
+        new_bill.ln(5)
+        new_bill.Client_Data(c_name, c_phone, c_email, p_brand, p_model, p_desc, f_desc)
+        new_bill.set_font('helvetica', 'B', 14)
+        new_bill.cell(new_bill.w, 5, 'Datos del Técnico', 0, 1, 'L')
+        new_bill.ln(5)
+        new_bill.Tech_Data(t_name, t_phone, t_email)
+        new_bill.set_font('helvetica', 'B', 14)
+        new_bill.cell(new_bill.w, 5, f'Ticket Asignado: {tc_code}', 0, 1, 'L')
+        new_bill.ln(5)
+        new_bill.output('test_rec_bill.pdf')
+
+
+class TSM_Bill_Reception(FPDF):
+    def header(self):
+        title = 'Recepción de Equipo(s)'
+        self.set_margins(25.4, 25.4)
+        self.set_font('helvetica', 'B', 18)
+        title_w = self.get_string_width(title) + 4
+        doc_w = self.w
+        self.set_x((doc_w - title_w) / 2)
+        self.cell(title_w, 10, title, border=0, ln=1, align='C', fill=0)#habilitar fondos y bordes
+        self.ln(10)
         
-    service_ctgs = {1:inst_mntn, 2:support}
+    def Client_Data(self, c_name, c_phone, c_email, p_desc, p_brand, p_model, f_desc):
+        self.set_font('helvetica', '', 12)
+        self.cell(self.w, 5, f'Nombre: {c_name}', 0, 1, 'L')
+        self.cell(self.w, 5, f'Teléfono: {c_phone}', 0, 1, 'L')
+        self.cell(self.w, 5, f'Correo: {c_email}', 0, 1, 'L')
+        self.cell(self.w, 5, f'Tipo de Equipo revisado: {p_desc}', 0, 1, 'L')
+        self.cell(self.w, 5, f'Marca del Equipo: {p_brand}', 0, 1, 'L')
+        self.cell(self.w, 5, f'Modelo del Equipo: {p_model}', 0, 1, 'L')
+        self.cell(self.w, 5, f'Fallas especificadas: {f_desc}', 0, 1, 'L')
+        self.ln(15)
     
-    def selectServices(self):
-        sel_active = True
-        serv_list = []
-        while sel_active:
-            ctg_sel = int(input("""Elija la categoria del servicio:
-    1) Instalacion/Mantenimiento
-    2) Asistencia Tecnica
-    Opcion: """))
-            
-            if ctg_sel == 1:
-                serv_sel = int(input("""Elija el servicio a aplicar:
-    1) Instalacion Equipo
-    2) Instalacion S.O.
-    3) Instalacion Software
-    4) Configuracion de equipos
-    5) Actualizacion de equipos
-    6) Copia de Seguridad
-    7) Resolucion Problemas Hardware
-    8) Resolucion Problemas Software
-    Opcion: """))
-                service = self.inst_mntn.get(serv_sel)
-                serv_list.append(service)
-            
-            elif ctg_sel == 2:
-                serv_sel = int(input("""Elija el servicio a aplicar:
-    1) Asistencia sobre Equipos
-    2) Asistencia sobre S.O.
-    3) Asistencia sobre Software
-    4) Resolucion Problemas de Uso
-    5) Formacion sobre Uso
-    Opcion: """))
-                service = self.support.get(serv_sel)
-                serv_list.append(service)
-                
-            else:
-                print("Servicio no existente")
-            
-            eos = str(input("Desea elegir otro servicio? s/n: "))
-            if eos != 's':
-                sel_active = False
-            else:
-                pass
-        return serv_list
+    def Tech_Data(self, t_name, t_phone, t_email):
+        self.set_font('helvetica', '', 12)
+        self.cell(self.w, 5, f'Nombre: {t_name}', 0, 1, 'L')
+        self.cell(self.w, 5, f'Teléfono: {t_phone}', 0, 1, 'L')
+        self.cell(self.w, 5, f'Correo: {t_email}', 0, 1, 'L')
+        self.ln(15)
+        
+    
