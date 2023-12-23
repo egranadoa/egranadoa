@@ -3,19 +3,19 @@ from datetime import datetime
 import sqlite3 as sql3
 import os
 
+
 def createCode(ser_num):
     CODE = "TC"
     code = CODE + str(ser_num).rjust(4, "0")
     
     return code
 
-def createTicket():
+def createRecTicket():
     selDb = str(input("Indique la base de datos a usar: "))
     if selDb[-3:] != ".db":
         selDb = selDb + ".db"
     t_num = 0
-    service = Service()
-    p_serv = ""
+    service = Services()
 
     c_name = str(input("Ingrese el Nombre del Cliente: "))
     c_phone = str(input("Ingrese el Telefono del Cliente: "))
@@ -25,9 +25,6 @@ def createTicket():
     p_brand = str(input("Ingrese la marca del equipo a revisar: "))
     p_model = str(input("Ingrese el Modelo del equipo a revisar: "))
     f_desc = str(input("Indique las fallas que presenta el equipo: "))
-    services = service.selectServices()
-    for service in services:
-        p_serv = p_serv + service + " + "
     t_sel = stfDb(selDb)
     t_name = t_sel[0]
     t_phone = t_sel[1]
@@ -41,8 +38,10 @@ def createTicket():
     tech = Technician(t_name, t_phone, t_email)
     t_code = auto_stcC(selDb)
     
-    tck = Ticket(t_code, datetime.now(), p_serv)
+    tck = Ticket(t_code, datetime.now())
     tck.ctd(client, prod, tech)
+    
+    service.prod_rec(c_name, c_phone, c_email, p_brand, p_model, p_desc, f_desc, t_name, t_phone, t_email, t_code)
 
 def auto_stcC(db_name):
     db_con = sql3.connect(db_name)
@@ -113,6 +112,27 @@ def rtcDb(db, cName, cPhone, cEmail, pBrand, pModel, pDesc, pFails, tName):
             tc_num_code = n
     tcCode = createCode(tc_num_code)
     db_rtcCode = db_con.execute(f"UPDATE tickets SET tc_code='{tcCode}' WHERE tc_sys_id={tc_num_code}")
+    db_con.commit()
+    db_c_fk_data = db_con.execute("SELECT c_sys_id FROM clients;")
+    c_fk_data = db_c_fk_data.fetchall()
+    for fks in c_fk_data:
+        for fk in fks:
+            c_fk = fk
+    upd_c_fk = db_con.execute(f"UPDATE tickets SET c_info='{c_fk}' WHERE tc_sys_id={tc_num_code}")
+    db_con.commit()
+    db_p_fk_data = db_con.execute("SELECT p_sys_id FROM products;")
+    p_fk_data = db_p_fk_data.fetchall()
+    for fks in p_fk_data:
+        for fk in fks:
+            p_fk = fk
+    upd_p_fk = db_con.execute(f"UPDATE tickets SET p_info='{p_fk}' WHERE tc_sys_id={tc_num_code}")
+    db_con.commit()
+    db_t_fk_data = db_con.execute(f"SELECT t_sys_id FROM technician WHERE t_name='{tName}';")
+    t_fk_data = db_t_fk_data.fetchall()
+    for fks in t_fk_data:
+        for fk in fks:
+            t_fk = fk
+    upd_t_fk = db_con.execute(f"UPDATE tickets SET t_info='{t_fk}' WHERE tc_sys_id={tc_num_code}")
     db_con.commit()
     db_con.close()
     
