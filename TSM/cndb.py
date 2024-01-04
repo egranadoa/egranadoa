@@ -8,21 +8,16 @@ def cndb():
         db_con = sql3.connect(db_name)
         db_con.close()
     else:
-        is_active = True
-        while is_active:
-            filepath = str(input("Escriba la dirección exacta del archivo: "))
-            with os.scandir(filepath) as fp:
-                fp = [file.name for file in fp if file.is_file()
-                    and file.name.endswith('.sql')]
-            print("Archivos SQL disponibles:")
+        filepath = str(input("Escriba la dirección exacta del archivo: "))
+        with os.scandir(filepath) as fp:
+            fp = [file.name for file in fp if file.is_file()
+                and file.name.endswith('.sql')]
             for i in range(0, len(fp)):
-                print([i], "--", fp[i])
-            sel_file = int(input("\nSegún el número,\nelija el archivo a ejecutar: "))
-            with open(filepath + fp[sel_file]) as sql_file:
-                db_con = sql3.connect(db_name)
                 try:
-                    db_con.execute(sql_file.read())
-                    print("Base de datos y tabla creada")
+                    with open(filepath + fp[i]) as sql_file:
+                        db_con = sql3.connect(db_name)
+                        db_con.execute(sql_file.read())
+                        print("Tabla", fp[i], "creada")
                 except sql3.OperationalError:
                     print("Ya existe esta tabla")
             eos = str(input("Desea crear otra tabla? s/n: "))
