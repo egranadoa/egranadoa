@@ -1,6 +1,6 @@
 from Classes import *
+from replab_test import *
 import psycopg2
-import getpass
 
 def checkStudentsFromDb(db_name, db_host, db_user, db_pass, db_port):
     conn = psycopg2.connect(database=db_name,
@@ -10,8 +10,6 @@ def checkStudentsFromDb(db_name, db_host, db_user, db_pass, db_port):
                             port=db_port)
 
     cursor = conn.cursor()
-
-
     cursor.execute("SELECT usuarios.id, usuarios.nombre, usuarios.apellido, usuarios.cedula, usuarios.nacionalidad, usuarios.tipo FROM usuarios WHERE usuarios.tipo=3;")
     usr_data = cursor.fetchall()
     cursor.execute("SELECT estudiantes.trayecto, estudiantes.semestre, estudiantes.carrera, estudiantes.usuario FROM estudiantes;")
@@ -35,7 +33,7 @@ def checkStudentsFromDb(db_name, db_host, db_user, db_pass, db_port):
     for student in std_list:
         student.getInfo()
 
-def drawStudiesCert(db_name, db_host, db_user, db_pass, db_port):
+def createStudiesCert(db_name, db_host, db_user, db_pass, db_port):
     conn = psycopg2.connect(database=db_name,
                             host=db_host,
                             user=db_user,
@@ -70,8 +68,5 @@ def drawStudiesCert(db_name, db_host, db_user, db_pass, db_port):
     sel_std = int(input("\nSegún el número, elija al estudiante para generar el documento: "))
     std = std_list[sel_std]
 
-    return std
-
-
-def createStudiesCert(student):
+    StudyCert(std.name, std.surname, std.nation, std.idc, std.carreer, std.course, std.sem)
     
